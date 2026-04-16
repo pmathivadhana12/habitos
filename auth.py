@@ -151,8 +151,8 @@ AUTH_CSS = """
 
 
 def show_login_page():
-    # If user already set in session (mid-rerun), bail immediately
-    if st.session_state.get("user") and st.session_state.get("page") == "app":
+    # If page has moved on from login for any reason, render nothing
+    if st.session_state.get("page") != "login":
         return
 
     # Seed demo data (fast no-op if already done)
