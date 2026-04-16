@@ -151,9 +151,9 @@ AUTH_CSS = """
 
 
 def show_login_page():
-    # If page has moved on from login for any reason, render nothing
+    # Hard stop — if page is not login, render NOTHING at all
     if st.session_state.get("page") != "login":
-        return
+        st.stop()
 
     # Seed demo data (fast no-op if already done)
     seed_demo_data()
@@ -325,15 +325,16 @@ def show_login_page():
 
 
 def _do_demo_login(email: str, mode: str):
-    """Set all session state atomically, show loading screen, then rerun."""
+    """Set all session state atomically then rerun."""
     result = login_user(email, "demo1234")
     if result["ok"]:
         hh = get_user_household(result["user"]["id"])
+        # Set page to "app" directly — no intermediate states
         st.session_state.update({
             "user":            result["user"],
             "household":       hh,
             "mode":            mode,
-            "page":            "loading",
+            "page":            "app",
             "nav":             "🏠 Household Dashboard" if mode == "household" else "🧍 Individual Dashboard",
             "show_demo_popup": None,
         })
